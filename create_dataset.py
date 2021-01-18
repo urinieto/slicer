@@ -85,7 +85,7 @@ def load_bounds(ann_file):
 
 
 def load_mel(mel_file):
-    """Reads the mel-spectrogram, add pink noise and converts to db"""
+    """Reads the mel-spectrogram, add pink noise, and converts to db"""
     return utils.to_db(utils.pad_pink_noise(np.load(mel_file)))
 
 
@@ -128,11 +128,19 @@ def process_split(mel_files, anns_dir, out_dir, suffix):
         W += w
         Y += y
 
+    # Make sure we have the same data sizes
+    assert(len(X) == len(W) and len(W) == len(Y))
+
+    # Suffle data
+    indices = np.random.choice(np.arange(len(X)), len(X), replace=False)
+    X = np.asarray(X)[indices]
+    W = np.asarray(W)[indices]
+    Y = np.asarray(Y)[indices]
+
     # Save
-    print(np.asarray(X).shape)
-    np.save(os.path.join(out_dir, f"X_{suffix}.npy"), np.array(X))
-    np.save(os.path.join(out_dir, f"W_{suffix}.npy"), np.array(W))
-    np.save(os.path.join(out_dir, f"Y_{suffix}.npy"), np.array(Y))
+    np.save(os.path.join(out_dir, f"X_{suffix}.npy"), X)
+    np.save(os.path.join(out_dir, f"W_{suffix}.npy"), W)
+    np.save(os.path.join(out_dir, f"Y_{suffix}.npy"), Y)
 
 
 def process_all_tracks(mels_dir, anns_dir, data_dir):
