@@ -1,6 +1,7 @@
 # Paths
 ANNS_DIR = "harmonixset/dataset/segments"
 MELS_DIR = "melspecs"
+DATA_DIR = "data"
 
 # Audio parameters
 SR = 22050

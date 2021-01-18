@@ -18,6 +18,8 @@ from slicer.constants import HOP_LENGTH
 from slicer.constants import CONTEXT_DUR
 from slicer.constants import PINK_NOISE_DUR
 from slicer.constants import SMEARING_DUR
+from slicer.constants import PATCH_PER_BOUND
+from slicer.constants import DATA_DIR
 
 
 class Patcher(object):
@@ -102,18 +104,18 @@ def process_track(mel_file, ann_file):
     bounds_f = librosa.time_to_frames(bounds, sr=SR, hop_length=HOP_LENGTH)
     patcher = Patcher()
     for bound_f in bounds_f:
-        pos_patch, pos_w = patcher.get_positive_patch(X, bound_f)
-        neg_patch, neg_w = patcher.get_negative_patch(X, bounds_f)
+        for _ in range(PATCH_PER_BOUND):
+            pos_patch, pos_w = patcher.get_positive_patch(X, bound_f)
+            neg_patch, neg_w = patcher.get_negative_patch(X, bounds_f)
 
-        # Store
-        patches += [pos_patch, neg_patch]
-        weights += [pos_w, neg_w]
-        labels += [1, 0]
-        # print(pos_patch.shape)
+            # Store
+            patches += [pos_patch, neg_patch]
+            weights += [pos_w, neg_w]
+            labels += [1, 0]
     return patches, weights, labels
 
 
-def process_split(mel_files, anns_dir):
+def process_split(mel_files, anns_dir, out_dir, suffix):
     """Processes a data split with the given mel files."""
     X = []
     W = []
@@ -125,10 +127,15 @@ def process_split(mel_files, anns_dir):
         X += x
         W += w
         Y += y
+
+    # Save
     print(np.asarray(X).shape)
+    np.save(os.path.join(out_dir, f"X_{suffix}.npy"), np.array(X))
+    np.save(os.path.join(out_dir, f"W_{suffix}.npy"), np.array(W))
+    np.save(os.path.join(out_dir, f"Y_{suffix}.npy"), np.array(Y))
 
 
-def process_all_tracks(mels_dir, anns_dir):
+def process_all_tracks(mels_dir, anns_dir, data_dir):
     # Read input files and make sure file lengths match
     mel_files = glob.glob(os.path.join(mels_dir, "*.npy"))
     ann_files = glob.glob(os.path.join(anns_dir, "*.txt"))
@@ -137,7 +144,10 @@ def process_all_tracks(mels_dir, anns_dir):
     # Split data
     mel_files_train, mel_files_test = \
         train_test_split(mel_files, test_size=0.2, random_state=1)
-    process_split(mel_files_train, anns_dir)
+
+    # Process for each split
+    process_split(mel_files_train, anns_dir, data_dir, "train")
+    process_split(mel_files_test, anns_dir, data_dir, "test")
 
 
 if __name__ == "__main__":
@@ -150,7 +160,11 @@ if __name__ == "__main__":
                         dest='anns_dir',
                         default=ANNS_DIR,
                         help='Directory with segmentation annotations')
-    args = parser.parse_args()
+    parser.add_argument('--data_dir',
+                        dest='data_dir',
+                        default=DATA_DIR,
+                        help='Directory to store the dataset')
 
+    args = parser.parse_args()
     np.random.seed(666)
     process_all_tracks(**vars(args))
