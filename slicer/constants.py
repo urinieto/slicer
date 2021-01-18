@@ -18,3 +18,9 @@ GAUSSIAN_STD = 5        # Standard deviation of the boundary smearing sampling
 PATCH_PER_BOUND = 2     # Number of positive patches per boundary
 GAUSSIAN_LEN = int(SMEARING_DUR / (HOP_LENGTH / SR))
 PINK_NOISE_DUR = (CONTEXT_DUR + SMEARING_DUR) / 2
+PATCH_LEN = int(CONTEXT_DUR / (HOP_LENGTH / SR))
+
+# Architecture parameters
+N_CONV_LAYERS = 3
+N_DENSE_LAYERS = 1
+N_MINIBATCH = 64
