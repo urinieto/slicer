@@ -33,6 +33,9 @@ class CNN(object):
         for _ in range(N_CONV_LAYERS):
             self.add_conv_layer()
 
+        # Flatten
+        self.model.add(layers.Flatten())
+
         # Dense layers
         for _ in range(N_DENSE_LAYERS):
             self.add_dense_layer()
