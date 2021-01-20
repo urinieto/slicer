@@ -18,7 +18,7 @@ class CNN(object):
                                      input_shape=(N_MELS, PATCH_LEN, 1)))
         self.model.add(layers.BatchNormalization())
         self.model.add(layers.Activation(activations.relu))
-        self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(layers.MaxPooling2D((1, 2)))
 
     def add_dense_layer(self):
         self.model.add(layers.Dense(256))
