@@ -1,7 +1,4 @@
-# Paths
-ANNS_DIR = "harmonixset/dataset/segments"
-MELS_DIR = "melspecs"
-DATA_DIR = "data"
+import os
 
 # Audio parameters
 SR = 22050
@@ -18,3 +15,22 @@ GAUSSIAN_STD = 5        # Standard deviation of the boundary smearing sampling
 PATCH_PER_BOUND = 2     # Number of positive patches per boundary
 GAUSSIAN_LEN = int(SMEARING_DUR / (HOP_LENGTH / SR))
 PINK_NOISE_DUR = (CONTEXT_DUR + SMEARING_DUR) / 2
+PATCH_LEN = int(CONTEXT_DUR / (HOP_LENGTH / SR))
+
+# Peak picking parameters
+PEAK_PICKING_CONTEXT = 6
+PEAK_PICKING_THRES = 0.5
+PEAK_PICKING_PAST_AVG = 12
+PEAK_PICKING_FUTU_AVG = 6
+
+# Architecture parameters
+N_CONV_LAYERS = 5
+N_DENSE_LAYERS = 2
+N_MINIBATCH = 64
+
+# Paths and Files
+PARENT_DIR = os.path.join(os.path.dirname(__file__), "..")
+ANNS_DIR = os.path.join(PARENT_DIR, "harmonixset/dataset/segments")
+MELS_DIR = os.path.join(PARENT_DIR, "melspecs")
+DATA_DIR = os.path.join(PARENT_DIR, "data")
+TEST_NAMES = os.path.join(DATA_DIR, "names_test.txt")

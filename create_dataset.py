@@ -77,13 +77,6 @@ def compute_gaussian():
     return signal.windows.gaussian(GAUSSIAN_LEN, GAUSSIAN_STD)
 
 
-def load_bounds(ann_file):
-    """Reads the boundaries from the given annotation file"""
-    with open(ann_file, "r") as f:
-        d = f.readlines()
-    return np.array([float(row.split(" ")[0]) for row in d])
-
-
 def load_mel(mel_file):
     """Reads the mel-spectrogram, add pink noise, and converts to db"""
     return utils.to_db(utils.pad_pink_noise(np.load(mel_file)))
@@ -93,7 +86,7 @@ def process_track(mel_file, ann_file):
     """Process a given track with the mel-spectrogram and annotation files."""
     # print(mel_file)
     # Read annotations
-    bounds = load_bounds(ann_file)
+    bounds = utils.load_bounds(ann_file)
 
     # Load mel spectrogram, pad pink noise, and convert to dB
     X = load_mel(mel_file)
