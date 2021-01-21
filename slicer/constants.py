@@ -1,7 +1,4 @@
-# Paths
-ANNS_DIR = "harmonixset/dataset/segments"
-MELS_DIR = "melspecs"
-DATA_DIR = "data"
+import os
 
 # Audio parameters
 SR = 22050
@@ -30,3 +27,10 @@ PEAK_PICKING_FUTU_AVG = 6
 N_CONV_LAYERS = 5
 N_DENSE_LAYERS = 2
 N_MINIBATCH = 64
+
+# Paths and Files
+PARENT_DIR = os.path.join(os.path.dirname(__file__), "..")
+ANNS_DIR = os.path.join(PARENT_DIR, "harmonixset/dataset/segments")
+MELS_DIR = os.path.join(PARENT_DIR, "melspecs")
+DATA_DIR = os.path.join(PARENT_DIR, "data")
+TEST_NAMES = os.path.join(DATA_DIR, "names_test.txt")

@@ -89,3 +89,13 @@ def load_bounds(ann_file):
     with open(ann_file, "r") as f:
         d = f.readlines()
     return np.array([float(row.split(" ")[0]) for row in d])
+
+
+def to_times(bounds):
+    """Converts boundaries in frames to times."""
+    return librosa.frames_to_time(bounds, sr=SR, hop_length=HOP_LENGTH)
+
+
+def to_intervals(bounds):
+    """Converts the given set of boundaries to intervals."""
+    return np.asarray([[start, end] for start, end in zip(bounds[:-1], bounds[1:])])
