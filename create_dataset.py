@@ -120,9 +120,11 @@ def process_split(mel_files, anns_dir, out_dir, suffix):
     X = []
     W = []
     Y = []
+    names = []
     for mel_file in tqdm(mel_files):
         name = os.path.basename(mel_file)
         ann_file = os.path.join(anns_dir, name.replace("-mel.npy", ".txt"))
+        names.append(os.path.basename(ann_file.replace(".txt", "")))
         x, w, y = process_track(mel_file, ann_file)
         X += x
         W += w
@@ -141,6 +143,8 @@ def process_split(mel_files, anns_dir, out_dir, suffix):
     np.save(os.path.join(out_dir, f"X_{suffix}.npy"), X)
     np.save(os.path.join(out_dir, f"W_{suffix}.npy"), W)
     np.save(os.path.join(out_dir, f"Y_{suffix}.npy"), Y)
+    with open(os.path.join(out_dir, f"names_{suffix}.txt"), 'w') as f:
+        [f.write(f"{name}\n") for name in names]
 
 
 def process_all_tracks(mels_dir, anns_dir, data_dir):
