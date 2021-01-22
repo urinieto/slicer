@@ -26,7 +26,8 @@ def eval_slicer(S):
 
         # Compute and process estimations
         mel = np.load(os.path.join(MELS_DIR, name + "-mel.npy"))
-        est_bounds = S.do_the_slice(mel)
+        S.set_mel(mel)
+        est_bounds = S.do_the_slice()
         est_bounds = np.concatenate(([0], est_bounds, [mel.shape[1] - 1]))
         est_inters = utils.to_intervals(utils.to_times(est_bounds))
 
